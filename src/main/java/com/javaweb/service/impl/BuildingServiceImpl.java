@@ -37,15 +37,21 @@ public class BuildingServiceImpl implements IBuildingService {
 			building.setManagerName(item.getManagerName());
 			building.setManagerPhone(item.getManagerPhonenumber());
 			building.setFloorArea(item.getFloorArea());
-			List<Integer> listRentArea = new ArrayList<Integer>();
-			listRentArea.addAll(rentAreaRepository.findValueByBuildingID(item.getId()));
-			building.setRentArea(listRentArea);
+			building.setRentArea(listRentArea(rentAreaRepository.findValueByBuildingID(item.getId())));
 			building.setDeposit(item.getDeposit());
 			building.setRentPrice(item.getRentPrice());
 			building.setServicefee(item.getServiceFee());
+			building.setFreeArea(null);
 			result.add(building);
 		}
 		return result;
 	}
-
+	
+	private List<String> listRentArea(List<Integer> rentAreas) {
+	    List<String> convertedRentAreas = new ArrayList<>();
+	    for (Integer item : rentAreas) {
+	        convertedRentAreas.add(item.toString());
+	    }
+	    return convertedRentAreas;
+	}
 }

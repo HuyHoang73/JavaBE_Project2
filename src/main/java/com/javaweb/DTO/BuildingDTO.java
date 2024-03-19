@@ -10,7 +10,7 @@ public class BuildingDTO {
 	private String managerPhone;
 	private int floorArea;
 	private String freeArea;
-	private List<Integer> rentArea;
+	private List<String> rentArea;
 	private int rentPrice;
 	private String deposit;
 	private String servicefee;
@@ -56,10 +56,10 @@ public class BuildingDTO {
 	public void setFreeArea(String freeArea) {
 		this.freeArea = freeArea;
 	}
-	public void setRentArea(List<Integer> rentArea) {
+	public void setRentArea(List<String> rentArea) {
 		this.rentArea = rentArea;
 	}
-	public List<Integer> getRentArea() {
+	public List<String> getRentArea() {
 		return rentArea;
 	}
 	public int getRentPrice() {

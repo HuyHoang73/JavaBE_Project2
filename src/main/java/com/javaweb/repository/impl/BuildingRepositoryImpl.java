@@ -18,20 +18,13 @@ import com.javaweb.utils.ConnectionUtils;
 public class BuildingRepositoryImpl implements IBuildingRepository {
 	private String createJoinQuery(Map<String, Object> params, List<String> typeCode) {
 		String join = "";
-		// DistrictID
-		if (params.containsKey("districtid") && params.get("districtid") instanceof Integer) {
-			join += " INNER JOIN district on building.districtid = district.id ";
+
+		// MinArea và MaxArea
+		if ((params.containsKey("minarea") && params.get("minarea") instanceof Integer) ||
+		    (params.containsKey("maxarea") && params.get("maxarea") instanceof Integer)) {
+		    join += " INNER JOIN rentarea ON building.id = rentarea.buildingid ";
 		}
 
-		// MinArea
-		if (params.containsKey("minarea") && params.get("minarea") instanceof Integer) {
-			join += " INNER JOIN rentarea on building.id = rentarea.buildingid ";
-		}
-
-		// MaxArea
-		if (params.containsKey("maxarea") && params.get("maxarea") instanceof Integer) {
-			join += " INNER JOIN rentarea on building.id = rentarea.buildingid ";
-		}
 
 		// StaffID
 		if (params.containsKey("staffid") && params.get("staffid") instanceof Integer) {
