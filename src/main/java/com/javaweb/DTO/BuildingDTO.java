@@ -1,7 +1,5 @@
 package com.javaweb.DTO;
 
-import java.util.List;
-
 public class BuildingDTO {
 	private String name;
 	private String address;
@@ -10,7 +8,7 @@ public class BuildingDTO {
 	private String managerPhone;
 	private int floorArea;
 	private String freeArea;
-	private List<String> rentArea;
+	private String rentArea;
 	private int rentPrice;
 	private String deposit;
 	private String servicefee;
@@ -56,10 +54,10 @@ public class BuildingDTO {
 	public void setFreeArea(String freeArea) {
 		this.freeArea = freeArea;
 	}
-	public void setRentArea(List<String> rentArea) {
+	public void setRentArea(String rentArea) {
 		this.rentArea = rentArea;
 	}
-	public List<String> getRentArea() {
+	public String getRentArea() {
 		return rentArea;
 	}
 	public int getRentPrice() {

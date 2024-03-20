@@ -32,12 +32,12 @@ public class BuildingServiceImpl implements IBuildingService {
 			BuildingDTO building = new BuildingDTO();
 			building.setName(item.getName());
 			String districtName = districtRepository.findNameByID(item.getDistrictID());
-			building.setAddress(districtName + "," + item.getWard() + "," + item.getStreet());
+			building.setAddress(item.getStreet() + "," + item.getWard() + "," + districtName);
 			building.setNumberOfBasement(item.getNumberOfBasement());
 			building.setManagerName(item.getManagerName());
 			building.setManagerPhone(item.getManagerPhonenumber());
 			building.setFloorArea(item.getFloorArea());
-			building.setRentArea(listRentArea(rentAreaRepository.findValueByBuildingID(item.getId())));
+			building.setRentArea(listRentAreas(rentAreaRepository.findValueByBuildingID(item.getId())));
 			building.setDeposit(item.getDeposit());
 			building.setRentPrice(item.getRentPrice());
 			building.setServicefee(item.getServiceFee());
@@ -47,11 +47,12 @@ public class BuildingServiceImpl implements IBuildingService {
 		return result;
 	}
 	
-	private List<String> listRentArea(List<Integer> rentAreas) {
+	private String listRentAreas(List<Integer> rentAreas) {
 	    List<String> convertedRentAreas = new ArrayList<>();
 	    for (Integer item : rentAreas) {
 	        convertedRentAreas.add(item.toString());
 	    }
-	    return convertedRentAreas;
+	    return String.join(",", convertedRentAreas);
 	}
+
 }
