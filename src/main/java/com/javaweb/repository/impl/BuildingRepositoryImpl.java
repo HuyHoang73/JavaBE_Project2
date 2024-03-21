@@ -160,34 +160,13 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 		return where;
 	}
 
-	private String createGroupByQuery(Map<String, Object> params, List<String> typeCode) {
-		String groupBy = "";
-
-		// MinArea và MaxArea
-		if (((params.containsKey("minarea") && params.get("minarea") != null
-				&& !params.get("minarea").toString().equals(""))) ||
-		    (params.containsKey("maxarea") && params.get("maxarea") != null
-					&& !params.get("maxarea").toString().equals(""))) {
-			groupBy += " GROUP BY building.id ";
-		}
-
-		// StaffID
-		if (params.containsKey("staffid") && params.get("staffid") instanceof Integer) {
-			groupBy += " GROUP BY building.id ";
-		}
-
-		// TypeCode
-		if (typeCode != null && !typeCode.isEmpty()) {
-			groupBy += " GROUP BY building.id ";
-		}
-		return groupBy;
-	}
+	
 	@Override
 	public List<BuildingEntity> findAll(Map<String, Object> params, List<String> typeCode) {
 		String sql = "SELECT * FROM building ";
 		String where = createWhereQuery(params, typeCode);
 		String join = createJoinQuery(params, typeCode);
-		String groupBy = createGroupByQuery(params, typeCode);
+		String groupBy = " GROUP BY building.id ";
 		sql = sql + join + where + groupBy;
 
 		List<BuildingEntity> result = new ArrayList<BuildingEntity>();
