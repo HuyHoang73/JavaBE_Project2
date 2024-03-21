@@ -29,9 +29,9 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 
 
 		// StaffID
-		if (params.containsKey("staffid") && params.get("staffid") instanceof Integer) {
-			join += " INNER JOIN assignmentbuilding on building.id = assignmentbuilding.buildingid "
-					+ " INNER JOIN user on assignmentbuilding.staffid = user.id ";
+		if (params.containsKey("staffid") && params.get("staffid") != null
+				&& !params.get("staffid").toString().equals("")) {
+			join += " INNER JOIN assignmentbuilding on building.id = assignmentbuilding.buildingid ";
 		}
 
 		// TypeCode
