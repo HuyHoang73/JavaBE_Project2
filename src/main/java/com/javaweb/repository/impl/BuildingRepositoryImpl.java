@@ -20,8 +20,10 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 		String join = "";
 
 		// MinArea và MaxArea
-		if ((params.containsKey("minarea") && params.get("minarea") instanceof Integer) ||
-		    (params.containsKey("maxarea") && params.get("maxarea") instanceof Integer)) {
+		if (((params.containsKey("minarea") && params.get("minarea") != null
+				&& !params.get("minarea").toString().equals(""))) ||
+		    (params.containsKey("maxarea") && params.get("maxarea") != null
+					&& !params.get("maxarea").toString().equals(""))) {
 		    join += " INNER JOIN rentarea ON building.id = rentarea.buildingid ";
 		}
 
@@ -35,7 +37,7 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 		// TypeCode
 		if (typeCode != null && !typeCode.isEmpty()) {
 			join += " INNER JOIN buildingrenttype on building.id = buildingrenttype.buildingid "
-					+ " INNER JOIN renttype on buildingrenttype.renttypeid = renttype.id";
+					+ " INNER JOIN renttype on buildingrenttype.renttypeid = renttype.id ";
 		}
 		return join;
 	}
@@ -49,14 +51,16 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 		}
 
 		// FloorArea
-		if (params.containsKey("floorarea") && params.get("floorarea") instanceof Integer) {
-			int floorArea = (Integer) params.get("floorarea");
+		if (params.containsKey("floorarea") && params.get("floorarea") != null
+				&& !params.get("floorarea").toString().equals("")) {
+			String floorArea = params.get("floorarea").toString();
 			where += " AND floorarea = " + floorArea + " ";
 		}
 
 		// DistrictID
-		if (params.containsKey("districtid") && params.get("districtid") instanceof Integer) {
-			int districtID = (Integer) params.get("districtid");
+		if (params.containsKey("districtid") && params.get("districtid") != null
+				&& !params.get("districtid").toString().equals("")) {
+			String districtID = params.get("districtid").toString();
 			where += " AND districtid = " + districtID + " ";
 		}
 
@@ -74,8 +78,9 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 		}
 
 		// NumberOfBasement
-		if (params.containsKey("numberofbasement") && params.get("numberofbasement") instanceof Integer) {
-			int numberOfBasement = (Integer) params.get("numberofbasement");
+		if (params.containsKey("numberofbasement") && params.get("numberofbasement") != null
+				&& !params.get("numberofbasement").toString().equals("")) {
+			String numberOfBasement = params.get("numberofbasement").toString();
 			where += " AND numberofbasement = " + numberOfBasement + " ";
 		}
 
@@ -93,28 +98,33 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 		}
 
 		// MinArea
-		if (params.containsKey("minarea") && params.get("minarea") instanceof Integer) {
-			int minArea = (Integer) params.get("minarea");
+		if (params.containsKey("minarea") && params.get("minarea") != null
+				&& !params.get("minarea").toString().equals("")) {
+			String minArea = params.get("minarea").toString();
 			where += " AND value >= " + minArea + " ";
 		}
 
 		// MaxArea
-		if (params.containsKey("maxarea") && params.get("maxarea") instanceof Integer) {
-			int maxArea = (Integer) params.get("maxarea");
+		if (params.containsKey("maxarea") && params.get("maxarea") != null
+				&& !params.get("maxarea").toString().equals("")) {
+			String maxArea = params.get("maxarea").toString();
 			where += " AND value <= " + maxArea + " ";
 		}
 
 		// MinPrice
-		if (params.containsKey("minprice") && params.get("minprice") instanceof Integer) {
-			Integer minPrice = ((Integer) params.get("minprice")).intValue();
-			where += " AND rentprice >= " + minPrice + " ";
+		if (params.containsKey("minprice") && params.get("minprice") != null
+				&& !params.get("minprice").toString().equals("")) {
+		    String minPrice = params.get("minprice").toString();
+		    where += " AND rentprice >= " + minPrice + " ";
 		}
 
 		// MaxPrice
-		if (params.containsKey("maxprice") && params.get("maxprice") instanceof Integer) {
-			int maxPrice = (int) params.get("maxprice");
-			where += " AND rentprice <= " + maxPrice + " ";
+		if (params.containsKey("maxprice") && params.get("maxprice") != null
+				&& !params.get("maxprice").toString().equals("")) {
+		    String maxPrice = params.get("maxprice").toString();
+		    where += " AND rentprice <= " + maxPrice + " ";
 		}
+
 
 		// ManagerName
 		if (params.containsKey("managername") && params.get("managername") != null
@@ -131,8 +141,9 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 		}
 
 		// StaffID
-		if (params.containsKey("staffid") && params.get("staffid") instanceof Integer) {
-			int staffID = ((Integer) params.get("staffid")).intValue();
+		if (params.containsKey("staffid") && params.get("staffid") != null
+				&& !params.get("staffid").toString().equals("")) {
+			String staffID = params.get("staffid").toString();
 			where += " AND staffid = " + staffID + " ";
 		}
 
@@ -149,12 +160,35 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 		return where;
 	}
 
+	private String createGroupByQuery(Map<String, Object> params, List<String> typeCode) {
+		String groupBy = "";
+
+		// MinArea và MaxArea
+		if (((params.containsKey("minarea") && params.get("minarea") != null
+				&& !params.get("minarea").toString().equals(""))) ||
+		    (params.containsKey("maxarea") && params.get("maxarea") != null
+					&& !params.get("maxarea").toString().equals(""))) {
+			groupBy += " GROUP BY building.id ";
+		}
+
+		// StaffID
+		if (params.containsKey("staffid") && params.get("staffid") instanceof Integer) {
+			groupBy += " GROUP BY building.id ";
+		}
+
+		// TypeCode
+		if (typeCode != null && !typeCode.isEmpty()) {
+			groupBy += " GROUP BY building.id ";
+		}
+		return groupBy;
+	}
 	@Override
 	public List<BuildingEntity> findAll(Map<String, Object> params, List<String> typeCode) {
 		String sql = "SELECT * FROM building ";
 		String where = createWhereQuery(params, typeCode);
 		String join = createJoinQuery(params, typeCode);
-		sql = sql + join + where;
+		String groupBy = createGroupByQuery(params, typeCode);
+		sql = sql + join + where + groupBy;
 
 		List<BuildingEntity> result = new ArrayList<BuildingEntity>();
 		try (Connection conn = ConnectionUtils.getConnection();
