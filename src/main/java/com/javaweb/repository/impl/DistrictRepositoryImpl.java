@@ -8,33 +8,32 @@ import java.sql.Statement;
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.repository.IDistrictRepository;
+import com.javaweb.repository.entity.DistrictEntity;
 import com.javaweb.utils.ConnectionUtils;
 
 @Repository
 public class DistrictRepositoryImpl implements IDistrictRepository {
 
 	@Override
-	public String findNameByID(Integer districtID) {
-		String sql = "SELECT name FROM district ";
-		String where = " WHERE 1 = 1 ";
+	public DistrictEntity findNameByID(Integer districtID) {
+		StringBuilder sql = new StringBuilder("SELECT name FROM district ");
+		StringBuilder where = new StringBuilder(" WHERE 1 = 1 ");
 		if (districtID != null) {
-			where += " AND id = " + districtID + " ";
+			where.append(" AND id = " + districtID + " ");
 		}
-		sql += where;
-		String result = null;
+		sql.append(where);
+		
+		DistrictEntity districtEntity = new DistrictEntity();
 		try (Connection conn = ConnectionUtils.getConnection();
 				Statement stm = conn.createStatement();
-				ResultSet rs = stm.executeQuery(sql)) {
-			if (rs.next()) {
-				result = rs.getString("name");
-			} else {
-				result = null;
+				ResultSet rs = stm.executeQuery(sql.toString())) {
+			while(rs.next()) {
+				districtEntity.setName(rs.getString("name"));
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Connected failed...");
 		}
-		return result;
+		return districtEntity;
 	}
 
 }

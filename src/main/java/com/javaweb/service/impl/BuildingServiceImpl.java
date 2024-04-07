@@ -8,51 +8,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.javaweb.DTO.BuildingDTO;
+import com.javaweb.converter.BuildingConverter;
 import com.javaweb.repository.IBuildingRepository;
-import com.javaweb.repository.IDistrictRepository;
-import com.javaweb.repository.IRentAreaRepository;
 import com.javaweb.repository.entity.BuildingEntity;
 import com.javaweb.service.IBuildingService;
 
 @Service
 public class BuildingServiceImpl implements IBuildingService {
 	@Autowired
-	private IDistrictRepository districtRepository;
-	
-	@Autowired
 	private IBuildingRepository buildingRepository;
 	
 	@Autowired
-	private IRentAreaRepository rentAreaRepository;
+	private BuildingConverter buildingConverter;
+	
 	@Override
 	public List<BuildingDTO> findAll(Map<String, Object> params, List<String> typeCode) {
 		List<BuildingEntity> buildingEntities = buildingRepository.findAll(params, typeCode);
 		List<BuildingDTO> result = new ArrayList<BuildingDTO>();
 		for (BuildingEntity item : buildingEntities) {
-			BuildingDTO building = new BuildingDTO();
-			building.setName(item.getName());
-			String districtName = districtRepository.findNameByID(item.getDistrictID());
-			building.setAddress(item.getStreet() + "," + item.getWard() + "," + districtName);
-			building.setNumberOfBasement(item.getNumberOfBasement());
-			building.setManagerName(item.getManagerName());
-			building.setManagerPhone(item.getManagerPhonenumber());
-			building.setFloorArea(item.getFloorArea());
-			building.setRentArea(listRentAreas(rentAreaRepository.findValueByBuildingID(item.getId())));
-			building.setDeposit(item.getDeposit());
-			building.setRentPrice(item.getRentPrice());
-			building.setServicefee(item.getServiceFee());
-			building.setFreeArea(null);
+			BuildingDTO building = buildingConverter.toBuildingDTO(item);
 			result.add(building);
 		}
 		return result;
-	}
-	
-	private String listRentAreas(List<Integer> rentAreas) {
-	    List<String> convertedRentAreas = new ArrayList<>();
-	    for (Integer item : rentAreas) {
-	        convertedRentAreas.add(item.toString());
-	    }
-	    return String.join(",", convertedRentAreas);
 	}
 
 }

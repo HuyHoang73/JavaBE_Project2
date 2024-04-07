@@ -13,166 +13,100 @@ import org.springframework.stereotype.Repository;
 import com.javaweb.repository.IBuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
 import com.javaweb.utils.ConnectionUtils;
+import com.javaweb.utils.NumberUtil;
+import com.javaweb.utils.StringUtil;
 
 @Repository
 public class BuildingRepositoryImpl implements IBuildingRepository {
-	private String createJoinQuery(Map<String, Object> params, List<String> typeCode) {
-		String join = "";
-
+	public void createJoinQuery(Map<String, Object> params, List<String> typeCode, StringBuilder sql) {
 		// MinArea và MaxArea
-		if (((params.containsKey("minarea") && params.get("minarea") != null
-				&& !params.get("minarea").toString().equals(""))) ||
-		    (params.containsKey("maxarea") && params.get("maxarea") != null
-					&& !params.get("maxarea").toString().equals(""))) {
-		    join += " INNER JOIN rentarea ON building.id = rentarea.buildingid ";
+		String minArea = (String)params.get("minarea");
+		String maxArea = (String)params.get("maxarea");
+		if (StringUtil.checkString(maxArea) || StringUtil.checkString(minArea)) {
+		    sql.append(" INNER JOIN rentarea r ON b.id = r.buildingid ");
 		}
 
-
 		// StaffID
-		if (params.containsKey("staffid") && params.get("staffid") != null
-				&& !params.get("staffid").toString().equals("")) {
-			join += " INNER JOIN assignmentbuilding on building.id = assignmentbuilding.buildingid ";
+		String staffID = (String)params.get("staffid");
+		if (StringUtil.checkString(staffID)) {
+			sql.append(" INNER JOIN assignmentbuilding asm on b.id = asm.buildingid ");
 		}
 
 		// TypeCode
 		if (typeCode != null && !typeCode.isEmpty()) {
-			join += " INNER JOIN buildingrenttype on building.id = buildingrenttype.buildingid "
-					+ " INNER JOIN renttype on buildingrenttype.renttypeid = renttype.id ";
+			sql.append(" INNER JOIN buildingrenttype brt on b.id = brt.buildingid "
+					+ " INNER JOIN renttype rt on brt.renttypeid = rt.id ");
 		}
-		return join;
 	}
 
-	private String createWhereQuery(Map<String, Object> params, List<String> typeCode) {
-		String where = "WHERE 1 = 1 ";
-		// Name
-		if (params.containsKey("name") && params.get("name") != null && !params.get("name").toString().equals("")) {
-			String name = params.get("name").toString();
-			where += " AND name LIKE '%" + name + "%' ";
-		}
-
-		// FloorArea
-		if (params.containsKey("floorarea") && params.get("floorarea") != null
-				&& !params.get("floorarea").toString().equals("")) {
-			String floorArea = params.get("floorarea").toString();
-			where += " AND floorarea = " + floorArea + " ";
-		}
-
-		// DistrictID
-		if (params.containsKey("districtid") && params.get("districtid") != null
-				&& !params.get("districtid").toString().equals("")) {
-			String districtID = params.get("districtid").toString();
-			where += " AND districtid = " + districtID + " ";
-		}
-
-		// Ward
-		if (params.containsKey("ward") && params.get("ward") != null && !params.get("ward").toString().equals("")) {
-			String ward = params.get("ward").toString();
-			where += " AND ward LIKE '%" + ward + "%' ";
-		}
-
-		// Street
-		if (params.containsKey("street") && params.get("street") != null
-				&& !params.get("street").toString().equals("")) {
-			String street = params.get("street").toString();
-			where += " AND street LIKE '%" + street + "%' ";
-		}
-
-		// NumberOfBasement
-		if (params.containsKey("numberofbasement") && params.get("numberofbasement") != null
-				&& !params.get("numberofbasement").toString().equals("")) {
-			String numberOfBasement = params.get("numberofbasement").toString();
-			where += " AND numberofbasement = " + numberOfBasement + " ";
-		}
-
-		// Direction
-		if (params.containsKey("direction") && params.get("direction") != null
-				&& !params.get("direction").toString().equals("")) {
-			String direction = params.get("direction").toString();
-			where += " AND direction LIKE '%" + direction + "%' ";
-		}
-
-		// Level
-		if (params.containsKey("level") && params.get("level") != null && !params.get("level").toString().equals("")) {
-			String level = params.get("level").toString();
-			where += " AND level LIKE '%" + level + "%' ";
-		}
-
-		// MinArea
-		if (params.containsKey("minarea") && params.get("minarea") != null
-				&& !params.get("minarea").toString().equals("")) {
-			String minArea = params.get("minarea").toString();
-			where += " AND value >= " + minArea + " ";
-		}
-
-		// MaxArea
-		if (params.containsKey("maxarea") && params.get("maxarea") != null
-				&& !params.get("maxarea").toString().equals("")) {
-			String maxArea = params.get("maxarea").toString();
-			where += " AND value <= " + maxArea + " ";
-		}
-
-		// MinPrice
-		if (params.containsKey("minprice") && params.get("minprice") != null
-				&& !params.get("minprice").toString().equals("")) {
-		    String minPrice = params.get("minprice").toString();
-		    where += " AND rentprice >= " + minPrice + " ";
-		}
-
-		// MaxPrice
-		if (params.containsKey("maxprice") && params.get("maxprice") != null
-				&& !params.get("maxprice").toString().equals("")) {
-		    String maxPrice = params.get("maxprice").toString();
-		    where += " AND rentprice <= " + maxPrice + " ";
-		}
-
-
-		// ManagerName
-		if (params.containsKey("managername") && params.get("managername") != null
-				&& !params.get("managername").toString().equals("")) {
-			String managerName = params.get("managername").toString();
-			where += " AND managername LIKE '%" + managerName + "%' ";
-		}
-
-		// ManagerPhoneNumber
-		if (params.containsKey("managerphonenumber") && params.get("managerphonenumber") != null
-				&& !params.get("managerphonenumber").toString().equals("")) {
-			String managerPhonenumber = params.get("managerphonenumber").toString();
-			where += " AND managerphonenumber LIKE '%" + managerPhonenumber + "%' ";
-		}
-
-		// StaffID
-		if (params.containsKey("staffid") && params.get("staffid") != null
-				&& !params.get("staffid").toString().equals("")) {
-			String staffID = params.get("staffid").toString();
-			where += " AND staffid = " + staffID + " ";
-		}
-
-		// TypeCode
-		if (typeCode != null && !typeCode.isEmpty()) {
-			StringBuilder typeCondition = new StringBuilder(" AND code IN (");
-			for (String code : typeCode) {
-				typeCondition.append("'").append(code).append("',");
+	private void createWhereQueryNormal(Map<String, Object> params, StringBuilder where) {
+		for(Map.Entry<String, Object> item : params.entrySet()) {
+			if(!item.getKey().equals("staffid") && !item.getKey().equals("typecode") && !item.getKey().startsWith("min") && !item.getKey().startsWith("max")) {
+				String data = item.getValue().toString(); // Do gia tri tra ve dang o kieu object nen phai chuyen ve chuoi
+				if(StringUtil.checkString(data)) {
+					if(NumberUtil.checkNumber(data)) {
+						where.append(" AND b." + item.getKey() + " = " + data + " ");
+					} else {
+						where.append(" AND b." + item.getKey() + " like '%" + data + "%' ");
+					}
+				}
 			}
-			typeCondition.deleteCharAt(typeCondition.length() - 1);
-			typeCondition.append(")");
-			where += typeCondition.toString();
 		}
-		return where;
+	}
+	
+	private void createWhereQuerySpecial(Map<String, Object> params, List<String> typeCode, StringBuilder where) {
+		String minArea = (String)params.get("minarea");
+		String maxArea = (String)params.get("maxarea");
+		if (StringUtil.checkString(maxArea)) {
+		    where.append(" AND r.value <= " + maxArea);
+		}
+		if (StringUtil.checkString(minArea)) {
+			where.append(" AND r.value >= " + minArea);
+		}
+		
+		String minPrice = (String)params.get("minprice");
+		String maxPrice = (String)params.get("maxprice");
+		if (StringUtil.checkString(maxPrice)) {
+		    where.append(" AND b.rentprice <= " + maxArea);
+		}
+		if (StringUtil.checkString(minPrice)) {
+			where.append(" AND b.rentprice >= " + minArea);
+		}
+		
+		String staffID = (String)params.get("staffid");
+		if(StringUtil.checkString(staffID)) {
+			where.append(" AND asm.staffid = " + staffID);
+		}
+		
+		if(params.containsKey("typeCode")) {
+			if(typeCode != null && !typeCode.isEmpty()) {
+				where.append(" AND rt.code IN (");
+				for(int i = 0; i < typeCode.size(); i++) {
+					where.append("'" + typeCode.get(i) + "'");
+					if(i < typeCode.size() - 1) {
+						where.append(",");
+					}
+				}
+				where.append(") ");
+			}
+		}
 	}
 
 	
 	@Override
 	public List<BuildingEntity> findAll(Map<String, Object> params, List<String> typeCode) {
-		String sql = "SELECT * FROM building ";
-		String where = createWhereQuery(params, typeCode);
-		String join = createJoinQuery(params, typeCode);
-		String groupBy = " GROUP BY building.id ";
-		sql = sql + join + where + groupBy;
+		StringBuilder sql = new StringBuilder("SELECT b.id, b.name, b.districtid, b. street, b.ward, b.numberofbasement, b.managername, b.managerphonenumber, b.floorarea, b.rentprice, b.brokeragefee, b.servicefee, b.deposit FROM building b ");
+		StringBuilder where = new StringBuilder(" WHERE 1 = 1 ");
+		createJoinQuery(params, typeCode, sql);
+		createWhereQueryNormal(params, where);
+		createWhereQuerySpecial(params, typeCode, where);
+		sql.append(where);
+		sql.append(" GROUP BY b.id ");
 
 		List<BuildingEntity> result = new ArrayList<BuildingEntity>();
 		try (Connection conn = ConnectionUtils.getConnection();
 				Statement stm = conn.createStatement();
-				ResultSet rs = stm.executeQuery(sql)) {
+				ResultSet rs = stm.executeQuery(sql.toString())) {
 			while (rs.next()) {
 				BuildingEntity building = new BuildingEntity();
 				building.setId(rs.getInt("id"));

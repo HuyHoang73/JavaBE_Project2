@@ -12,9 +12,11 @@ public class ConnectionUtils {
 	public static final Connection getConnection() {
 		try {
 			Connection conn = DriverManager.getConnection(DBURL, USERNAME, PASS);
+			System.out.println("Connected successfully");
 			return conn;
 		}catch (SQLException e) {
 			e.printStackTrace();
+			System.out.println("Connected failed");
 		}
 		return null;
 	}

@@ -17,29 +17,26 @@ import com.javaweb.utils.ConnectionUtils;
 public class RentAreaRepositoryImpl implements IRentAreaRepository{
 
 	@Override
-	public List<Integer> findValueByBuildingID(Integer buildingID) {
-		String sql = "SELECT value FROM rentarea ";
-		String where = " WHERE 1 = 1 ";
+	public List<String> findValueByBuildingID(Integer buildingID) {
+		StringBuilder sql = new StringBuilder("SELECT value FROM rentarea ");
+		StringBuilder where = new StringBuilder(" WHERE 1 = 1 ");
 		if (buildingID != null) {
-			where += " AND buildingid = " + buildingID + " ";
+			where.append(" AND buildingid = " + buildingID + " ");
 		}
-		sql += where;
-		List<Integer> result = new ArrayList<Integer>();
+		sql.append(where);
+		
+		List<String> result = new ArrayList<String>();
 		try (Connection conn = ConnectionUtils.getConnection();
 				Statement stm = conn.createStatement();
-				ResultSet rs = stm.executeQuery(sql)) {
+				ResultSet rs = stm.executeQuery(sql.toString())) {
 			while(rs.next()) {
 				RentAreaEntity rentAreaEntity = new RentAreaEntity();
-				rentAreaEntity.setValue(rs.getInt("value"));
-				result.add(rentAreaEntity.getValue());
+				rentAreaEntity.setValue(rs.getLong("value"));
+				result.add(rentAreaEntity.getValue().toString());
 			}
-			System.out.println("Connected successfully...");
-			return result;
 		} catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Connected failed...");
 		}
-		return null;
+		return result;
 	}
-	
 }

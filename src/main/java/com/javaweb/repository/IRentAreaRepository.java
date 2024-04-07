@@ -3,5 +3,5 @@ package com.javaweb.repository;
 import java.util.List;
 
 public interface IRentAreaRepository {
-	List<Integer> findValueByBuildingID(Integer buildingID);
+	List<String> findValueByBuildingID(Integer buildingID);
 }
