@@ -5,13 +5,13 @@ public class BuildingDTO {
 	private String address;
 	private int numberOfBasement;
 	private String managerName;
-	private String managerPhone;
+	private String managerPhonenumber;
 	private int floorArea;
 	private String freeArea;
 	private String rentArea;
 	private int rentPrice;
 	private String deposit;
-	private String servicefee;
+	private String serviceFee;
 	public String getName() {
 		return name;
 	}
@@ -36,11 +36,11 @@ public class BuildingDTO {
 	public void setManagerName(String managerName) {
 		this.managerName = managerName;
 	}
-	public String getManagerPhone() {
-		return managerPhone;
+	public String getManagerPhonenumber() {
+		return managerPhonenumber;
 	}
-	public void setManagerPhone(String managerPhone) {
-		this.managerPhone = managerPhone;
+	public void setManagerPhonenumber(String managerPhone) {
+		this.managerPhonenumber = managerPhone;
 	}
 	public int getFloorArea() {
 		return floorArea;
@@ -73,10 +73,10 @@ public class BuildingDTO {
 		this.deposit = deposit;
 	}
 	public String getServicefee() {
-		return servicefee;
+		return serviceFee;
 	}
 	public void setServicefee(String servicefee) {
-		this.servicefee = servicefee;
+		this.serviceFee = servicefee;
 	}
 	
 	
