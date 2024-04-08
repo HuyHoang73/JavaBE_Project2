@@ -21,20 +21,21 @@ import com.javaweb.utils.StringUtil;
 public class BuildingRepositoryImpl implements IBuildingRepository {
 	/**
 	 * Hàm này để tạo ra câu join trong sql
-	 * @param params - các trường thông thường
+	 * 
+	 * @param params   - các trường thông thường
 	 * @param typeCode - trường dạng list
-	 * @param sql - câu sql gốc
+	 * @param sql      - câu sql gốc
 	 */
 	public void createJoinQuery(Map<String, Object> params, List<String> typeCode, StringBuilder sql) {
 		// MinArea và MaxArea
-		String minArea = (String)params.get("minarea");
-		String maxArea = (String)params.get("maxarea");
+		String minArea = (String) params.get("minarea");
+		String maxArea = (String) params.get("maxarea");
 		if (StringUtil.checkString(maxArea) || StringUtil.checkString(minArea)) {
-		    sql.append(" INNER JOIN rentarea r ON b.id = r.buildingid ");
+			sql.append(" INNER JOIN rentarea r ON b.id = r.buildingid ");
 		}
 
 		// StaffID
-		String staffID = (String)params.get("staffid");
+		String staffID = (String) params.get("staffid");
 		if (StringUtil.checkString(staffID)) {
 			sql.append(" INNER JOIN assignmentbuilding asm on b.id = asm.buildingid ");
 		}
@@ -47,11 +48,13 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 	}
 
 	private void createWhereQueryNormal(Map<String, Object> params, StringBuilder where) {
-		for(Map.Entry<String, Object> item : params.entrySet()) {
-			if(!item.getKey().equals("staffid") && !item.getKey().equals("typeCode") && !item.getKey().startsWith("min") && !item.getKey().startsWith("max")) {
-				String data = item.getValue().toString(); // Do gia tri tra ve dang o kieu object nen phai chuyen ve chuoi
-				if(StringUtil.checkString(data)) {
-					if(NumberUtil.checkNumber(data)) {
+		for (Map.Entry<String, Object> item : params.entrySet()) {
+			if (!item.getKey().equals("staffid") && !item.getKey().equals("typeCode")
+					&& !item.getKey().startsWith("min") && !item.getKey().startsWith("max")) {
+				String data = item.getValue().toString(); // Do gia tri tra ve dang o kieu object nen phai chuyen ve
+															// chuoi
+				if (StringUtil.checkString(data)) {
+					if (NumberUtil.checkNumber(data)) {
 						where.append(" AND b." + item.getKey() + " = " + data + " ");
 					} else {
 						where.append(" AND b." + item.getKey() + " like '%" + data + "%' ");
@@ -60,28 +63,28 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 			}
 		}
 	}
-	
+
 	private void createWhereQuerySpecial(Map<String, Object> params, List<String> typeCode, StringBuilder where) {
-		String minArea = (String)params.get("minarea");
-		String maxArea = (String)params.get("maxarea");
+		String minArea = (String) params.get("minarea");
+		String maxArea = (String) params.get("maxarea");
 		if (StringUtil.checkString(maxArea)) {
-		    where.append(" AND r.value <= " + maxArea);
+			where.append(" AND r.value <= " + maxArea);
 		}
 		if (StringUtil.checkString(minArea)) {
 			where.append(" AND r.value >= " + minArea);
 		}
-		
-		String minPrice = (String)params.get("minprice");
-		String maxPrice = (String)params.get("maxprice");
+
+		String minPrice = (String) params.get("minprice");
+		String maxPrice = (String) params.get("maxprice");
 		if (StringUtil.checkString(maxPrice)) {
-		    where.append(" AND b.rentprice <= " + maxPrice);
+			where.append(" AND b.rentprice <= " + maxPrice);
 		}
 		if (StringUtil.checkString(minPrice)) {
 			where.append(" AND b.rentprice >= " + minPrice);
 		}
-		
-		String staffID = (String)params.get("staffid");
-		if(StringUtil.checkString(staffID)) {
+
+		String staffID = (String) params.get("staffid");
+		if (StringUtil.checkString(staffID)) {
 			where.append(" AND asm.staffid = " + staffID);
 		}
 //		if(params.containsKey("typeCode")) {
@@ -96,19 +99,17 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 //				where.append(") ");
 //			}
 //		}
-		if(params.containsKey("typeCode")) {
-			if(typeCode != null && !typeCode.isEmpty()) {
-				where.append(" AND rt.code IN (");
-				String sqlJoin = typeCode.stream().map(item -> "'" + item + "'").collect(Collectors.joining(","));
-				where.append(sqlJoin + ") ");
-			}
+		if (typeCode != null && !typeCode.isEmpty()) {
+			where.append(" AND rt.code IN (");
+			String sqlJoin = typeCode.stream().map(item -> "'" + item + "'").collect(Collectors.joining(","));
+			where.append(sqlJoin + ") ");
 		}
 	}
 
-	
 	@Override
 	public List<BuildingEntity> findAll(Map<String, Object> params, List<String> typeCode) {
-		StringBuilder sql = new StringBuilder("SELECT b.id, b.name, b.districtid, b.street, b.ward, b.numberofbasement, b.managername, b.managerphonenumber, b.floorarea, b.rentprice, b.brokeragefee, b.servicefee, b.deposit FROM building b ");
+		StringBuilder sql = new StringBuilder(
+				"SELECT b.id, b.name, b.districtid, b.street, b.ward, b.numberofbasement, b.managername, b.managerphonenumber, b.floorarea, b.rentprice, b.brokeragefee, b.servicefee, b.deposit FROM building b ");
 		StringBuilder where = new StringBuilder(" WHERE 1 = 1 ");
 		createJoinQuery(params, typeCode, sql);
 		createWhereQueryNormal(params, where);
