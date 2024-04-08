@@ -87,18 +87,18 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 		if (StringUtil.checkString(staffID)) {
 			where.append(" AND asm.staffid = " + staffID);
 		}
-//		if(params.containsKey("typeCode")) {
-//			if(typeCode != null && !typeCode.isEmpty()) {
-//				where.append(" AND rt.code IN (");
-//				for(int i = 0; i < typeCode.size(); i++) {
-//					where.append("'" + typeCode.get(i) + "'");
-//					if(i < typeCode.size() - 1) {
-//						where.append(",");
-//					}
+
+//		if (typeCode != null && !typeCode.isEmpty()) {
+//			where.append(" AND rt.code IN (");
+//			for (int i = 0; i < typeCode.size(); i++) {
+//				where.append("'" + typeCode.get(i) + "'");
+//				if (i < typeCode.size() - 1) {
+//					where.append(",");
 //				}
-//				where.append(") ");
 //			}
+//			where.append(") ");
 //		}
+
 		if (typeCode != null && !typeCode.isEmpty()) {
 			where.append(" AND rt.code IN (");
 			String sqlJoin = typeCode.stream().map(item -> "'" + item + "'").collect(Collectors.joining(","));
