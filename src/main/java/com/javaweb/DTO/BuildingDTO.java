@@ -3,13 +3,13 @@ package com.javaweb.DTO;
 public class BuildingDTO {
 	private String name;
 	private String address;
-	private int numberOfBasement;
+	private Integer numberOfBasement;
 	private String managerName;
 	private String managerPhonenumber;
-	private int floorArea;
+	private Integer floorArea;
 	private String freeArea;
 	private String rentArea;
-	private int rentPrice;
+	private Integer rentPrice;
 	private String deposit;
 	private String serviceFee;
 	public String getName() {
@@ -24,10 +24,10 @@ public class BuildingDTO {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-	public int getNumberOfBasement() {
+	public Integer getNumberOfBasement() {
 		return numberOfBasement;
 	}
-	public void setNumberOfBasement(int numberOfBasement) {
+	public void setNumberOfBasement(Integer numberOfBasement) {
 		this.numberOfBasement = numberOfBasement;
 	}
 	public String getManagerName() {
@@ -42,10 +42,10 @@ public class BuildingDTO {
 	public void setManagerPhonenumber(String managerPhone) {
 		this.managerPhonenumber = managerPhone;
 	}
-	public int getFloorArea() {
+	public Integer getFloorArea() {
 		return floorArea;
 	}
-	public void setFloorArea(int floorArea) {
+	public void setFloorArea(Integer floorArea) {
 		this.floorArea = floorArea;
 	}
 	public String getFreeArea() {
@@ -60,10 +60,10 @@ public class BuildingDTO {
 	public String getRentArea() {
 		return rentArea;
 	}
-	public int getRentPrice() {
+	public Integer getRentPrice() {
 		return rentPrice;
 	}
-	public void setRentPrice(int rentPrice) {
+	public void setRentPrice(Integer rentPrice) {
 		this.rentPrice = rentPrice;
 	}
 	public String getDeposit() {

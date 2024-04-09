@@ -1,17 +1,17 @@
 package com.javaweb.repository.entity;
 
 public class BuildingEntity {
-	private int id;
+	private Integer id;
 	private String name;
 	private String street;
 	private String ward;
-	private int districtID;
+	private Integer districtID;
 	private String structure;
-	private int numberOfBasement;
-	private int floorArea;
+	private Integer numberOfBasement;
+	private Integer floorArea;
 	private String direction;
 	private String level;
-	private int rentPrice;
+	private Integer rentPrice;
 	private String rentPriceDescription;
 	private String serviceFee;
 	private String carFee;
@@ -30,10 +30,10 @@ public class BuildingEntity {
 	private String image;
 	private String managerName;
 	private String managerPhonenumber;
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 	public String getName() {
@@ -54,10 +54,10 @@ public class BuildingEntity {
 	public void setWard(String ward) {
 		this.ward = ward;
 	}
-	public int getDistrictID() {
+	public Integer getDistrictID() {
 		return districtID;
 	}
-	public void setDistrictID(int districtID) {
+	public void setDistrictID(Integer districtID) {
 		this.districtID = districtID;
 	}
 	public String getStructure() {
@@ -66,16 +66,16 @@ public class BuildingEntity {
 	public void setStructure(String structure) {
 		this.structure = structure;
 	}
-	public int getNumberOfBasement() {
+	public Integer getNumberOfBasement() {
 		return numberOfBasement;
 	}
-	public void setNumberOfBasement(int numberOfBasement) {
+	public void setNumberOfBasement(Integer numberOfBasement) {
 		this.numberOfBasement = numberOfBasement;
 	}
-	public int getFloorArea() {
+	public Integer getFloorArea() {
 		return floorArea;
 	}
-	public void setFloorArea(int floorArea) {
+	public void setFloorArea(Integer floorArea) {
 		this.floorArea = floorArea;
 	}
 	public String getDirection() {
@@ -90,10 +90,10 @@ public class BuildingEntity {
 	public void setLevel(String level) {
 		this.level = level;
 	}
-	public int getRentPrice() {
+	public Integer getRentPrice() {
 		return rentPrice;
 	}
-	public void setRentPrice(int rentPrice) {
+	public void setRentPrice(Integer rentPrice) {
 		this.rentPrice = rentPrice;
 	}
 	public String getRentPriceDescription() {
