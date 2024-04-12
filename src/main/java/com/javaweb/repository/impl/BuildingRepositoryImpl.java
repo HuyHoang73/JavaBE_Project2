@@ -1,24 +1,26 @@
 package com.javaweb.repository.impl;
 
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.builder.BuildingSearchBuilder;
 import com.javaweb.repository.IBuildingRepository;
 import com.javaweb.repository.entity.BuildingEntity;
-import com.javaweb.utils.ConnectionUtils;
-import com.javaweb.utils.StringUtil;
 
 @Repository
+@Primary
 public class BuildingRepositoryImpl implements IBuildingRepository {
+	@PersistenceContext
+	private EntityManager entityManager;
+	
 	/**
 	 * Hàm này để tạo ra câu join trong sql
 	 * 
@@ -50,26 +52,24 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 	private void createWhereQueryNormal(BuildingSearchBuilder builder, StringBuilder where) {
 		try {
 			Field[] fields = BuildingSearchBuilder.class.getDeclaredFields();
-			for(Field item : fields) {
+			for (Field item : fields) {
 				item.setAccessible(true);
 				String fieldName = item.getName();
-				if (!fieldName.equals("staffid") && !fieldName.equals("typeCode")
-						&& !fieldName.startsWith("min") && !fieldName.startsWith("max")) {
+				if (!fieldName.equals("staffid") && !fieldName.equals("typeCode") && !fieldName.startsWith("min")
+						&& !fieldName.startsWith("max")) {
 					Object value = item.get(builder);
 					if (value != null) {
 						if (item.getType().getName().equals("java.lang.Integer")) {
 							where.append(" AND b." + fieldName + " = " + value + " ");
-						}
-						else if(item.getType().getName().equals("java.lang.Long")) {
+						} else if (item.getType().getName().equals("java.lang.Long")) {
 							where.append(" AND b." + fieldName + " = " + value + " ");
-						}
-						else if(item.getType().getName().equals("java.lang.String")) {
+						} else if (item.getType().getName().equals("java.lang.String")) {
 							where.append(" AND b." + fieldName + " like '%" + value + "%' ");
 						}
 					}
 				}
 			}
-		} catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -109,39 +109,19 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 	@Override
 	public List<BuildingEntity> findAll(BuildingSearchBuilder builder) {
 		StringBuilder sql = new StringBuilder(
-				"SELECT b.id, b.name, b.districtid, b.street, b.ward, b.numberofbasement, b.managername, b.managerphonenumber, b.floorarea, b.rentprice, b.brokeragefee, b.servicefee, b.deposit FROM building b ");
+				"SELECT b.id, b.name, b.street, b.ward, b.districtid, b.structure, b.numberofbasement, "
+				+ " b.floorarea, b.direction, b.level, b.rentprice, b.rentpricedescription, b.servicefee,"
+				+ " b.carfee, b.motorbikefee, b.overtimefee, b.waterfee, b.electricityfee, b.deposit, b.decorationtime,"
+				+ " b.payment, b.renttime, b.brokeragefee, b.note, b.linkofbuilding, b.map, b.image,"
+				+ " b.managername, b.managerphonenumber"
+				+ " FROM building b ");
 		StringBuilder where = new StringBuilder(" WHERE 1 = 1 ");
 		createJoinQuery(builder, sql);
 		createWhereQueryNormal(builder, where);
 		createWhereQuerySpecial(builder, where);
 		sql.append(where);
 		sql.append(" GROUP BY b.id ");
-
-		List<BuildingEntity> result = new ArrayList<BuildingEntity>();
-		try (Connection conn = ConnectionUtils.getConnection();
-				Statement stm = conn.createStatement();
-				ResultSet rs = stm.executeQuery(sql.toString())) {
-			while (rs.next()) {
-				BuildingEntity building = new BuildingEntity();
-				building.setId(rs.getInt("id"));
-				building.setName(rs.getString("name"));
-				building.setNumberOfBasement(rs.getInt("numberofbasement"));
-				building.setFloorArea(rs.getInt("floorarea"));
-				building.setDistrictID(rs.getInt("districtID"));
-				building.setWard(rs.getString("ward"));
-				building.setStreet(rs.getString("street"));
-				building.setManagerName(rs.getString("managername"));
-				building.setManagerPhonenumber(rs.getString("managerphonenumber"));
-				building.setRentPrice(rs.getInt("rentprice"));
-				building.setDeposit(rs.getString("deposit"));
-				building.setServiceFee(rs.getString("servicefee"));
-				result.add(building);
-			}
-			System.out.println("Connected successfully...");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			System.out.println("Connected failed...");
-		}
-		return result;
+		Query query = entityManager.createNativeQuery(sql.toString(), BuildingEntity.class);
+		return query.getResultList();
 	}
 }

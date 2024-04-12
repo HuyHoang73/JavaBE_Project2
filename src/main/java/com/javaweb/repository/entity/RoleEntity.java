@@ -5,11 +5,10 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 
 import lombok.Getter;
@@ -17,22 +16,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "district")
+@Table(name = "role")
 @Getter
 @Setter
 @NoArgsConstructor
-public class DistrictEntity {
+public class RoleEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@Column(name = "code")
-	private String code;
-	
 	@Column(name = "name")
 	private String name;
 	
-	@OneToMany(mappedBy = "district", fetch = FetchType.LAZY)
-	private List<BuildingEntity> buildings = new ArrayList<BuildingEntity>();
+	@Column(name = "code")
+	private String code;
 	
+//	@OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
+//	private List<UserRoleEntity> userRoleEntities = new ArrayList<UserRoleEntity>();
+	
+	@ManyToMany(mappedBy = "roles")
+	List<UserEntity> users = new ArrayList<UserEntity>();
 }
