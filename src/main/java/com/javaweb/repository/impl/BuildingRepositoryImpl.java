@@ -55,7 +55,7 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 			for (Field item : fields) {
 				item.setAccessible(true);
 				String fieldName = item.getName();
-				if (!fieldName.equals("staffid") && !fieldName.equals("typeCode") && !fieldName.startsWith("min")
+				if (!fieldName.equals("staffID") && !fieldName.equals("typeCode") && !fieldName.startsWith("min")
 						&& !fieldName.startsWith("max")) {
 					Object value = item.get(builder);
 					if (value != null) {
