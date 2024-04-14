@@ -1,4 +1,4 @@
-package com.javaweb.repository.impl;
+package com.javaweb.repository.custom.impl;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -12,12 +12,12 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 import com.javaweb.builder.BuildingSearchBuilder;
-import com.javaweb.repository.IBuildingRepository;
+import com.javaweb.repository.custom.BuildingRepositoryCustom;
 import com.javaweb.repository.entity.BuildingEntity;
 
 @Repository
 @Primary
-public class BuildingRepositoryImpl implements IBuildingRepository {
+public class BuildingRepositoryCustomImpl implements BuildingRepositoryCustom {
 	@PersistenceContext
 	private EntityManager entityManager;
 	
@@ -47,7 +47,7 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 			sql.append(" INNER JOIN buildingrenttype brt on b.id = brt.buildingid "
 					+ " INNER JOIN renttype rt on brt.renttypeid = rt.id ");
 		}
-	}
+}
 
 	private void createWhereQueryNormal(BuildingSearchBuilder builder, StringBuilder where) {
 		try {
@@ -108,13 +108,7 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 
 	@Override
 	public List<BuildingEntity> findAll(BuildingSearchBuilder builder) {
-		StringBuilder sql = new StringBuilder(
-				"SELECT b.id, b.name, b.street, b.ward, b.districtid, b.structure, b.numberofbasement, "
-				+ " b.floorarea, b.direction, b.level, b.rentprice, b.rentpricedescription, b.servicefee,"
-				+ " b.carfee, b.motorbikefee, b.overtimefee, b.waterfee, b.electricityfee, b.deposit, b.decorationtime,"
-				+ " b.payment, b.renttime, b.brokeragefee, b.note, b.linkofbuilding, b.map, b.image,"
-				+ " b.managername, b.managerphonenumber"
-				+ " FROM building b ");
+		StringBuilder sql = new StringBuilder("SELECT b.* FROM building b ");
 		StringBuilder where = new StringBuilder(" WHERE 1 = 1 ");
 		createJoinQuery(builder, sql);
 		createWhereQueryNormal(builder, where);
@@ -125,3 +119,5 @@ public class BuildingRepositoryImpl implements IBuildingRepository {
 		return query.getResultList();
 	}
 }
+
+
