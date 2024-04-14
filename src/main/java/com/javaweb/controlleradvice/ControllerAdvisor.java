@@ -31,7 +31,7 @@ public class ControllerAdvisor {
 		ErrorResponseDTO errorResponse = new ErrorResponseDTO();
 		errorResponse.setError(e.getMessage());
 		List<String> detail = new ArrayList<String>();
-		detail.add("Trường name hoặc addresss chưa được gửi về");
+		detail.add("Trường name hoặc address chưa được gửi về");
 		errorResponse.setDetail(detail);
 		return new ResponseEntity<Object>(errorResponse, HttpStatus.BAD_REQUEST);
 	}
